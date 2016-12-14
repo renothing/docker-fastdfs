@@ -1,9 +1,12 @@
-FROM myubuntu/base
+FROM ubuntu:16.04
 MAINTAINER zoomcook 'ops@winshare-edu.com'
-LABEL role='fastdfs' version='0.0.1' tags='fastdfs' description='fastdfs image with ssh service'
-ARG FASTDFSDIR='/data/fdfs'
+LABEL role='fastdfs' version='0.0.1' tags='fastdfs' description='fastdfs server based on docker'
+ARG FASTDFSDIR="/data/fdfs"
+ENV TIMEZONE="Asia/Shanghai" \
+    GROUP="group1"
 #install software
-RUN apt-get install -y gcc autoconf automake make unzip \
+RUN sed -i 's/archive.ubuntu/mirrors.aliyun/g' /etc/apt/sources.list && apt-get update && \
+ apt-get install -y gcc autoconf automake make unzip wget netcat\
  && cd /srv/ \
  && wget https://github.com/happyfish100/fastdfs/archive/master.zip -O fastdfs.zip \
  && wget https://github.com/happyfish100/libfastcommon/archive/master.zip -O libfastcommon.zip \
@@ -41,8 +44,8 @@ RUN apt-get install -y gcc autoconf automake make unzip \
 COPY opt/* /opt/
 COPY fastdfs/* /etc/fdfs/
 #forwarding port
-EXPOSE 22 80 22122 23000
+EXPOSE 80 22122 23000
 #volume dir
-VOLUME ["$FASTDFSDIR"]
+#VOLUME ["$FASTDFSDIR"]
 #set default command
-ENTRYPOINT bash /opt/startservice.sh
+ENTRYPOINT ["sh","/opt/startservice.sh"]
