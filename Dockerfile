@@ -41,8 +41,8 @@ RUN sed -i 's/archive.ubuntu/mirrors.aliyun/g' /etc/apt/sources.list && apt-get 
  && mkdir -p /var/log/fastdfs && chown fastdfs:fastdfs -R /var/log/fastdfs \
  && cd / && rm -rf /srv/*
 #copy init files
-COPY opt/* /opt/
-COPY fastdfs/* /etc/fdfs/
+ADD opt /opt/
+ADD fastdfs /etc/fdfs/
 #forwarding port
 EXPOSE 80 22122 23000
 #volume dir
