@@ -1,0 +1,28 @@
+#global docker info
+dockerpub: &dockerinfo
+   image: plugins/docker
+   volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+   force_tag: true
+   mirror: "https://docker.mirrors.ustc.edu.cn"
+   registry: ${ALI_DOCKER_URL}
+   username: ${ALI_DOCKER_USER}
+   password: ${ALI_DOCKER_PASS}
+   email: ${ALI_DOCKER_USER}
+   repo: "${ALI_DOCKER_URL}/winshare/fastdfs"
+docker: &docker
+   <<: *dockerinfo
+   tags:
+     - ${DRONE_TAG=latest}
+     - latest
+   when:
+     event: [push,tag]
+     branch: [master,refs/tags/*]
+pipeline:
+  clone:
+    image: plugins/git
+    recursive: true
+    tags: true
+  docker:
+    <<: *docker
+    dockerfile: Dockerfile
